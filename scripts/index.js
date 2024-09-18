@@ -24,6 +24,7 @@ function createCard (cardTitle, cardImageLink, cardImageAlt) {
     return cardElement;
 };
 
+/*
     // Функция рендеринга карточек
 function renderCards () {
         // Перебор элементов массива
@@ -37,5 +38,21 @@ function renderCards () {
         cardList.append(cardItem);    
     });
 };
+*/
+
+    // Функция рендеринга карточек
+function renderCards () {
+        // Перебор элементов массива
+    for (let i = 0; i < initialCards.length; i++) {
+            // Присвоение аргументам данных, содержащихся в элементах массива
+        cardTitle = initialCards[i].name;
+        cardImageLink = initialCards[i].link;
+        cardImageAlt = initialCards[i].name;
+            // Вызов фунции создания карточки с аргументами и добавление в DOM
+        const cardItem = createCard(cardTitle, cardImageLink, cardImageAlt); 
+        cardList.append(cardItem);    
+    };
+};
+
 
 renderCards();
