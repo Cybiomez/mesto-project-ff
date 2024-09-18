@@ -24,8 +24,8 @@ function createCard (cardTitle, cardImageLink, cardImageAlt) {
     return cardElement;
 };
 
-/*
-    // Функция рендеринга карточек
+
+    // Функция рендеринга карточек ЧЕРЕЗ МЕТОД МАССИВА
 function renderCards () {
         // Перебор элементов массива
     initialCards.forEach(function (element) {
@@ -38,9 +38,9 @@ function renderCards () {
         cardList.append(cardItem);    
     });
 };
-*/
 
-    // Функция рендеринга карточек
+/*
+    // Функция рендеринга карточек ЧЕРЕЗ ЦИКЛ
 function renderCards () {
         // Перебор элементов массива
     for (let i = 0; i < initialCards.length; i++) {
@@ -53,6 +53,6 @@ function renderCards () {
         cardList.append(cardItem);    
     };
 };
-
+*/
 
 renderCards();
