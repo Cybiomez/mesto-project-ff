@@ -4,19 +4,19 @@ const cardList = cardsContainer.querySelector('.places__list');
 
     // Функция удаления карточки
 function deleteCard (event) {
-    event.target.parentElement.remove();
+    event.target.closest('.places__item').remove();
 };
 
     // Функция создания карточки
-function createCard (cardTitle, cardImageLink, cardImageAlt) {
+function createCard (cardData) {
         // Копирование шаблона карточки
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
-        // Определение аргументов
+        // Определение аргументов с присвоением данных из элемента массива по ключу
     const cardDescription = cardElement.querySelector('.card__description');
-    cardDescription.querySelector('.card__title').textContent = cardTitle;
-    cardElement.querySelector('.card__image').src = cardImageLink;
-    cardElement.querySelector('.card__image').alt = cardImageAlt;
+    cardDescription.querySelector('.card__title').textContent = cardData.name;
+    cardElement.querySelector('.card__image').src = cardData.link;
+    cardElement.querySelector('.card__image').alt = cardData.name;
         // Обработчик функции удаления
     const removeButton = cardElement.querySelector('.card__delete-button');
     removeButton.addEventListener('click', deleteCard);
@@ -24,18 +24,12 @@ function createCard (cardTitle, cardImageLink, cardImageAlt) {
     return cardElement;
 };
 
-
     // Функция рендеринга карточек ЧЕРЕЗ МЕТОД МАССИВА
 function renderCards () {
         // Перебор элементов массива
-    initialCards.forEach(function (element) {
-            // Присвоение аргументам данных, содержащихся в элементах массива
-        cardTitle = element.name;
-        cardImageLink = element.link;
-        cardImageAlt = element.name;
-            // Вызов фунции создания карточки с аргументами и добавление в DOM
-        const cardItem = createCard(cardTitle, cardImageLink, cardImageAlt); 
-        cardList.append(cardItem);    
+    initialCards.forEach(function (cardData) {
+            // Вызов фунции создания карточки и добавление в DOM 
+        cardList.append(createCard(cardData));    
     });
 };
 
@@ -44,13 +38,13 @@ function renderCards () {
 function renderCards () {
         // Перебор элементов массива
     for (let i = 0; i < initialCards.length; i++) {
-            // Присвоение аргументам данных, содержащихся в элементах массива
-        cardTitle = initialCards[i].name;
-        cardImageLink = initialCards[i].link;
-        cardImageAlt = initialCards[i].name;
+            // Создание объекта с данными из элемента массива
+        let cardData = {
+            name: initialCards[i].name,
+            link: initialCards[i].link,
+        };
             // Вызов фунции создания карточки с аргументами и добавление в DOM
-        const cardItem = createCard(cardTitle, cardImageLink, cardImageAlt); 
-        cardList.append(cardItem);    
+        cardList.append(createCard(cardData));    
     };
 };
 */
