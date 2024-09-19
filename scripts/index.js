@@ -2,13 +2,20 @@ const mainContainer = document.querySelector('.content');
 const cardsContainer = mainContainer.querySelector('.places');
 const cardList = cardsContainer.querySelector('.places__list');
 
-    // Функция удаления карточки
-function deleteCard (event) {
+/*
+    // Функция удаления карточки через event
+function deleteCard(event) {
     event.target.closest('.places__item').remove();
+};
+*/
+
+    // Функция удаления карточки через подачу карточки
+function deleteCard(cardElement) {
+    cardElement.remove();
 };
 
     // Функция создания карточки
-function createCard (cardData) {
+function createCard(cardData) {
         // Копирование шаблона карточки
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
@@ -18,8 +25,8 @@ function createCard (cardData) {
     cardElement.querySelector('.card__image').src = cardData.link;
     cardElement.querySelector('.card__image').alt = cardData.name;
         // Обработчик функции удаления
-    const removeButton = cardElement.querySelector('.card__delete-button');
-    removeButton.addEventListener('click', deleteCard);
+    const deleteButton = cardElement.querySelector('.card__delete-button');
+    deleteButton.addEventListener('click', () => {deleteCard(cardElement);});
         // Возврат скопированного из шаблона элемента
     return cardElement;
 };
