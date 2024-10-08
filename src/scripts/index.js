@@ -1,3 +1,5 @@
+import '../pages/index.css'; // добавьте импорт главного файла стилей
+
 const mainContainer = document.querySelector('.content');
 const cardsContainer = mainContainer.querySelector('.places');
 const cardList = cardsContainer.querySelector('.places__list');
@@ -57,3 +59,4 @@ function renderCards () {
 */
 
 renderCards();
+
