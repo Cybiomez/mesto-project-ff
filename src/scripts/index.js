@@ -2,31 +2,14 @@
 import '../pages/index.css'; 
     // Импорт массива данных карточек и функций управления ими
 import {initialCards, createCard, deleteCard, renderCards, cardList} from './cards.js';
-    //
-import {openModal, closeModal, cardPopup, popupTypeEdit, popupTypeNewCard} from './modal.js';
+    // Импорт функций и обработчиков попапов
+import {openModal, closeModal, cardPopup, popupTypeEdit, popupTypeNewCard, popupTypeImage} from './modal.js';
     // Рендер карточек из сассива
 renderCards();
-    // Вызов функции обработчика клика по карточкам
+    // Вызов функции обработчика клика по картинкам
 cardPopup();
     // Вызов функции обработчика лайка
 likeCard();
-
-// --------------------------------------------------------------
-
-    // Функция обработчика лайка
-function likeCard() {
-    const cardLikeButton = document.querySelectorAll('.card__like-button');
-    cardLikeButton.forEach(function(element) {
-        element.addEventListener('click', function () {
-            if (!element.classList.contains('card__like-button_is-active')) {
-                element.classList.add('card__like-button_is-active');
-            }
-            else {
-                element.classList.remove('card__like-button_is-active');
-            };
-        });
-    });
-};
 
 // --------------------------------------------------------------
 
@@ -89,7 +72,7 @@ function handleFormNewPlace(evt) {
     initialCards.unshift({name: cardName, link: cardLink});
         // Вызов функции отрисовки карточки из сассива
     cardList.prepend(createCard(initialCards[0]));
-        // Вызов функции обработчика клика по карточкам
+        // Вызов функции обработчика клика по картинкам
     cardPopup();
         // Вызов функции обработчика лайка
     likeCard();
@@ -102,3 +85,18 @@ function handleFormNewPlace(evt) {
 
     // Обработчик события отправки
 formNewPlace.addEventListener('submit', handleFormNewPlace);
+
+    // Функция обработчика лайка
+function likeCard() {
+    const cardLikeButton = document.querySelectorAll('.card__like-button');
+    cardLikeButton.forEach(function(element) {
+        element.addEventListener('click', function () {
+            if (!element.classList.contains('card__like-button_is-active')) {
+                element.classList.add('card__like-button_is-active');
+            }
+            else {
+                element.classList.remove('card__like-button_is-active');
+            };
+        });
+    });
+};

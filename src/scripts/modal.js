@@ -1,4 +1,4 @@
-export {openModal, closeModal, cardPopup, popupTypeEdit, popupTypeNewCard};
+export {openModal, closeModal, cardPopup, popupTypeEdit, popupTypeNewCard, popupTypeImage};
 
     // Поиск кнопок и объектов
 const profileEditButton = document.querySelector('.profile__edit-button');
