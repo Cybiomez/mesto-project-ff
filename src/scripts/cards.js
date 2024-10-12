@@ -1,4 +1,4 @@
-export {initialCards, createCard, deleteCard, renderCards};
+export {initialCards, createCard, deleteCard, renderCards, cardList};
 
 const initialCards = [
     {
@@ -49,10 +49,10 @@ function deleteCard(cardElement) {
     cardElement.remove();
 };
 
+    // Поиск контейнера для карточек
+const cardList = document.querySelector('.places__list');
     // Функция рендеринга карточек
 function renderCards () {
-        // Поиск контейнера для карточек
-    const cardList = document.querySelector('.places__list');
         // Перебор элементов массива
     initialCards.forEach(function (cardData) {
             // Вызов фунции создания карточки и добавление в DOM 
