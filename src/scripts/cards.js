@@ -1,4 +1,6 @@
-export const initialCards = [
+export {initialCards, createCard, deleteCard, renderCards};
+
+const initialCards = [
     {
       name: "Архыз",
       link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
@@ -24,3 +26,36 @@ export const initialCards = [
       link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
     }
 ];
+
+    // Функция создания карточки
+function createCard(cardData) {
+        // Копирование шаблона карточки
+    const cardTemplate = document.querySelector('#card-template').content;
+    const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
+        // Определение аргументов с присвоением данных из элемента массива по ключу
+    const cardDescription = cardElement.querySelector('.card__description');
+    cardDescription.querySelector('.card__title').textContent = cardData.name;
+    cardElement.querySelector('.card__image').src = cardData.link;
+    cardElement.querySelector('.card__image').alt = cardData.name;
+        // Обработчик функции удаления
+    const deleteButton = cardElement.querySelector('.card__delete-button');
+    deleteButton.addEventListener('click', () => {deleteCard(cardElement);});
+        // Возврат скопированного из шаблона элемента
+    return cardElement;
+};
+
+    // Функция удаления карточки через подачу карточки
+function deleteCard(cardElement) {
+    cardElement.remove();
+};
+
+    // Функция рендеринга карточек
+function renderCards () {
+        // Поиск контейнера для карточек
+    const cardList = document.querySelector('.places__list');
+        // Перебор элементов массива
+    initialCards.forEach(function (cardData) {
+            // Вызов фунции создания карточки и добавление в DOM 
+        cardList.append(createCard(cardData));    
+    });
+};
