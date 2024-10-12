@@ -1,15 +1,75 @@
+export {popupTypeImage, popupCaption, popupImage};
     // Импорт главного файла стилей
 import '../pages/index.css'; 
     // Импорт массива данных карточек и функций управления ими
-import {initialCards, createCard, deleteCard, renderCards, cardList} from './cards.js';
+import {initialCards, createCard, deleteCard, renderCards} from './cards.js';
     // Импорт функций и обработчиков попапов
-import {openModal, closeModal, cardPopup, popupTypeEdit, popupTypeNewCard, popupTypeImage} from './modal.js';
+import {openModal, closeModal} from './modal.js';
     // Рендер карточек из сассива
-renderCards();
-    // Вызов функции обработчика клика по картинкам
-cardPopup();
-    // Вызов функции обработчика лайка
-likeCard();
+
+    // Поиск контейнера для карточек
+const cardList = document.querySelector('.places__list');
+    renderCards(cardList);
+
+    // Поиск элементов попапа картинки
+const popupCaption = document.querySelector('.popup__caption');
+const popupImage = document.querySelector('.popup__image');
+    
+    // Поиск кнопок и объектов
+const profileEditButton = document.querySelector('.profile__edit-button');
+const profileAddButton = document.querySelector('.profile__add-button');
+const buttonClose = document.querySelectorAll('.popup__close');
+
+    // Поиск попапов
+const popupTypeEdit = document.querySelector('.popup_type_edit');
+const popupTypeNewCard = document.querySelector('.popup_type_new-card');
+const popupTypeImage = document.querySelector('.popup_type_image');
+const popup = document.querySelectorAll('.popup');
+
+// --------------------------------------------------------------
+
+    // Обработчик клика по кнопке редактирования профиля
+profileEditButton.addEventListener('click', function () {
+    openModal(popupTypeEdit);
+});
+
+    // Обработчик клика по кнопке добавления карточки
+profileAddButton.addEventListener('click', function () {
+    openModal(popupTypeNewCard);
+});
+
+// --------------------------------------------------------------
+
+    // Закрытие попапа по нажатию на крестик
+buttonClose.forEach(function(element) {
+    element.addEventListener('click', function() {
+        closeModal(element.parentNode.parentNode);
+        const popupValue = document.querySelectorAll('.popup__input');
+        popupValue.forEach(function (element) {
+            element.value = '';
+        });
+    });
+});
+    
+    // Закрытие попапа по нажатию на оверлей
+popup.forEach(function(element) {
+    element.addEventListener('click', function(evt) {
+        if (evt.target.classList.contains('popup') && !evt.target.classList.contains('popup__content')) {
+            closeModal(element);
+        };   
+    });
+});
+    
+    // Закрытие попапа по нажатию на Esc
+document.addEventListener('keyup', function (evt) {
+    if (evt.key === 'Escape') {
+        popup.forEach(function(element) {
+            if (element.classList.contains('popup_is-opened')) {
+                closeModal(element);
+            };
+        });
+    };
+});
 
 // --------------------------------------------------------------
 
@@ -69,13 +129,8 @@ function handleFormNewPlace(evt) {
     const cardName = initialCards.name;
     const cardLink = initialCards.link;
         // Передача данных в массив
-    initialCards.unshift({name: cardName, link: cardLink});
         // Вызов функции отрисовки карточки из сассива
-    cardList.prepend(createCard(initialCards[0]));
-        // Вызов функции обработчика клика по картинкам
-    cardPopup();
-        // Вызов функции обработчика лайка
-    likeCard();
+    cardList.prepend(createCard({name: cardName, link: cardLink}));
         // Закрытие попапа
     closeModal(popupTypeNewCard);
         // Сброс значений полей
@@ -85,18 +140,3 @@ function handleFormNewPlace(evt) {
 
     // Обработчик события отправки
 formNewPlace.addEventListener('submit', handleFormNewPlace);
-
-    // Функция обработчика лайка
-function likeCard() {
-    const cardLikeButton = document.querySelectorAll('.card__like-button');
-    cardLikeButton.forEach(function(element) {
-        element.addEventListener('click', function () {
-            if (!element.classList.contains('card__like-button_is-active')) {
-                element.classList.add('card__like-button_is-active');
-            }
-            else {
-                element.classList.remove('card__like-button_is-active');
-            };
-        });
-    });
-};
