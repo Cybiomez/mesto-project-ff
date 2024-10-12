@@ -40,35 +40,20 @@ profileAddButton.addEventListener('click', function () {
 
 // --------------------------------------------------------------
 
-    // Закрытие попапа по нажатию на крестик
+    // Обработчик закрытия попапа по нажатию на крестик
 buttonClose.forEach(function(element) {
     element.addEventListener('click', function() {
         closeModal(element.parentNode.parentNode);
-        const popupValue = document.querySelectorAll('.popup__input');
-        popupValue.forEach(function (element) {
-            element.value = '';
-        });
     });
 });
     
-    // Закрытие попапа по нажатию на оверлей
+    // Обработчик закрытия попапа по нажатию на оверлей
 popup.forEach(function(element) {
     element.addEventListener('click', function(evt) {
         if (evt.target.classList.contains('popup') && !evt.target.classList.contains('popup__content')) {
             closeModal(element);
         };   
     });
-});
-    
-    // Закрытие попапа по нажатию на Esc
-document.addEventListener('keyup', function (evt) {
-    if (evt.key === 'Escape') {
-        popup.forEach(function(element) {
-            if (element.classList.contains('popup_is-opened')) {
-                closeModal(element);
-            };
-        });
-    };
 });
 
 // --------------------------------------------------------------
