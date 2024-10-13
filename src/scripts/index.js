@@ -1,8 +1,8 @@
 // Импорт главного файла стилей
 import "../pages/index.css";
-// Импорт массива данных карточек и функций управления ими
+// Импорт функций создания, уаления и лайка карточек
 import { createCard, deleteCard, likeCard } from "./cards.js";
-// Импорт функций и обработчиков попапов
+// Импорт функций открытия и закрытия карточек
 import { openModal, closeModal } from "./modal.js";
 // Импорт массива с данными для карточек
 import { initialCards } from "./initialCards.js";
