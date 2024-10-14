@@ -13,6 +13,10 @@ import { initialCards } from "./initialCards.js";
 // Поиск контейнера для карточек
 const cardList = document.querySelector(".places__list");
 
+// Поиск заголовка и описания профиля
+const nameProfile = document.querySelector(".profile__title");
+const descriptionProfile = document.querySelector(".profile__description");
+
 // Поиск попапов
 const popups = document.querySelectorAll(".popup");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
@@ -46,8 +50,8 @@ const callbacks = { deleteCard, likeCard, handleImageClick };
 
 // Обработчик клика по кнопке отправки формы редактирования профиля
 profileEditButton.addEventListener("click", function () {
-  nameInput.value = document.querySelector(".profile__title").textContent;
-  jobInput.value = document.querySelector(".profile__description").textContent;
+  nameInput.value = nameProfile.textContent;
+  jobInput.value = descriptionProfile.textContent;
   openModal(popupTypeEdit);
 });
 
@@ -77,8 +81,8 @@ function handleFormEditProfileSubmit(evt) {
   // Отмена стандартной отправки формы
   evt.preventDefault();
   // Поиск полей формы редактирования профиля на странице
-  const nameOutput = document.querySelector(".profile__title");
-  const jobOutput = document.querySelector(".profile__description");
+  const nameOutput = nameProfile;
+  const jobOutput = descriptionProfile;
   // Присвоение новых значений из полей формы редактирования профиля
   nameOutput.textContent = nameInput.value;
   jobOutput.textContent = jobInput.value;
