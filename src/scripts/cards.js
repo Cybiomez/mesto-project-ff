@@ -1,5 +1,5 @@
 // Функция создания карточки
-function createCard(cardData, callbacks) {
+function createCard(cardData, callbackList) {
   // Копирование шаблона карточки
   const cardTemplate = document.querySelector("#card-template").content;
   const cardElement = cardTemplate
@@ -17,15 +17,15 @@ function createCard(cardData, callbacks) {
   cardImage.alt = cardData.name;
   // Обработчик функции удаления карточки
   deleteButton.addEventListener("click", () =>
-    callbacks.deleteCard(cardElement)
+    callbackList.deleteCard(cardElement)
   );
   // Обработчик функции лайка
   cardLikeButton.addEventListener("click", () =>
-    callbacks.likeCard(cardLikeButton)
+    callbackList.likeCard(cardLikeButton)
   );
-  // Обработчик функции попапа карточки
+  // Обработчик функции модального окна карточки
   cardImage.addEventListener("click", () =>
-    callbacks.handleImageClick(cardImage)
+    callbackList.handleImageClick(cardImage)
   );
   // Возврат скопированного из шаблона элемента
   return cardElement;
@@ -41,4 +41,5 @@ function likeCard(cardLikeButton) {
   cardLikeButton.classList.toggle("card__like-button_is-active");
 }
 
+// Экспорт функций создания, удаления и лайка карточек
 export { createCard, deleteCard, likeCard };

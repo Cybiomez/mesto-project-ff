@@ -1,3 +1,4 @@
+// Массив с данными для начальных карточек
 const initialCards = [
   {
     name: "Архыз",
@@ -25,4 +26,5 @@ const initialCards = [
   },
 ];
 
+// Экспорт массива с данными для начальных карточек
 export { initialCards };
