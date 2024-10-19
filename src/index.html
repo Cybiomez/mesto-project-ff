@@ -40,7 +40,7 @@
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Редактировать профиль</h3>
           <form class="popup__form" name="edit-profile" novalidate>
-            
+            <label class="popup__field">
               <input
                 type="text"
                 name="name"
@@ -53,8 +53,9 @@
                 data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
                 required
               />
-              <label for="input_type_name" class="form__input-error input_type_name-error"></label>
-            
+              <span class="form__input-error input_type_name-error"></span>
+            </label>
+            <label class="popup__field">
               <input
                 type="text"
                 name="description"
@@ -67,8 +68,8 @@
                 data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
                 required
               />
-              <label for="input_type_description" class="form__input-error input_type_description-error" ></label>
-            
+              <span class="form__input-error input_type_description-error" ></span>
+            </label>
             <button type="submit" class="button popup__button">
               Сохранить
             </button>
@@ -80,7 +81,7 @@
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Новое место</h3>
           <form class="popup__form" name="new-place" novalidate>
-            
+            <label class="popup__field">
               <input
                 type="text"
                 name="place-name"
@@ -93,8 +94,9 @@
                 data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
                 required
               />
-              <label for="input_type_card-name" class="form__input-error input_type_card-name-error" ></label>
-            
+              <span class="form__input-error input_type_card-name-error" ></span>
+            </label>
+            <label class="popup__field">
               <input
                 type="url"
                 name="link"
@@ -103,8 +105,8 @@
                 placeholder="Ссылка на картинку"
                 required
               />
-              <label for="input_type_url" class="form__input-error input_type_url-error" ></label>
-
+              <span class="form__input-error input_type_url-error" ></span>
+            </label>
             <button type="submit" class="button popup__button">
               Создать
             </button>
