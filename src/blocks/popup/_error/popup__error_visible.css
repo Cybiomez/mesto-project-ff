@@ -1,0 +1,6 @@
+.popup__error_visible {
+    font-size: 12px;
+    line-height: 8px;
+    color: #FF0000;
+    position: absolute;
+}
