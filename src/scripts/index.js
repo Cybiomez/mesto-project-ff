@@ -24,13 +24,11 @@ const popupTypeEdit = document.querySelector(".popup_type_edit");
 const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 const popupTypeImage = document.querySelector(".popup_type_image");
 
-// Поиск форм (редактирования профиля и добавления карточек)
-const formList = Array.from(document.querySelectorAll(".popup__form"));
+// Поиск форм редактирования профиля и добавления карточек
 const formEditProfile = document.forms["edit-profile"];
 const formNewPlace = document.forms["new-place"];
 
-// Поиск полей форм (редактирования профиля и добавления карточек)
-const inputList = Array.from(document.querySelectorAll(".popup__input"));
+// Поиск полей форм редактирования профиля и добавления карточек
 const profileNameInput = document.querySelector(".popup__input_type_name");
 const profileDescriptionInput = document.querySelector(".popup__input_type_description");
 const cardNameInput = document.querySelector(".popup__input_type_card-name");
@@ -47,17 +45,31 @@ const popupImage = document.querySelector(".popup__image");
 // Создание объекта колбэка для функции создания карточки
 const callbackList = { deleteCard, likeCard, handleImageClick };
 
+// Создание объекта настроек функции валидации
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}
+
 // --------------------------------------------------------------
 
-// Обработчик клика по кнопке отправки формы редактирования профиля
+// Обработчик события клика по кнопке открытя формы редактирования профиля
 profileEditButton.addEventListener("click", function () {
   profileNameInput.value = nameProfile.textContent;
   profileDescriptionInput.value = descriptionProfile.textContent;
+  // Вызов функции очистки ошибок валидации
+  clearValidation(popupTypeEdit, validationConfig);
+  // Вызов функии открытия модального окна
   openModal(popupTypeEdit);
 });
 
-// Обработчик клика по кнопке отправки формы добавления карточки
+// Обработчик события клика по кнопке открытия формы добавления карточки
 profileAddButton.addEventListener("click", function () {
+  // Вызов функии открытия модального окна
   openModal(popupTypeNewCard);
 });
 
@@ -111,6 +123,8 @@ function handleFormNewPlace(evt) {
   closeModal(popupTypeNewCard);
   // Сброс значений полей формы добавления карточки
   formNewPlace.reset();
+  // Вызов функции очистки ошибок валидации
+  clearValidation(popupTypeEdit, validationConfig);
 }
 
 // Обработчик события отправки формы добавления карточки
@@ -138,11 +152,4 @@ function renderCards() {
 renderCards();
 
 // Вызов функции добавления валидации
-enableValidation({
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-}); 
+enableValidation(validationConfig); 
