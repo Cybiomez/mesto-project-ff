@@ -8,6 +8,8 @@ import { openModal, closeModal } from "./modal.js";
 import { initialCards } from "./initialCards.js";
 // Импорт функций добавления и очистки валидации
 import { enableValidation, clearValidation } from "./validation.js";
+// Импорт функций взаимодействия с API
+import { getProfileData, getCardsForRender, patchProfileData } from "./apiConnect.js";
 
 // --------------------------------------------------------------
 
@@ -30,7 +32,9 @@ const formNewPlace = document.forms["new-place"];
 
 // Поиск полей форм редактирования профиля и добавления карточек
 const profileNameInput = document.querySelector(".popup__input_type_name");
-const profileDescriptionInput = document.querySelector(".popup__input_type_description");
+const profileDescriptionInput = document.querySelector(
+  ".popup__input_type_description"
+);
 const cardNameInput = document.querySelector(".popup__input_type_card-name");
 const cardUrlInput = document.querySelector(".popup__input_type_url");
 
@@ -47,13 +51,13 @@ const callbackList = { deleteCard, likeCard, handleImageClick };
 
 // Создание объекта настроек функции валидации
 const validationConfig = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-}
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
 
 // --------------------------------------------------------------
 
@@ -99,6 +103,8 @@ function handleFormEditProfileSubmit(evt) {
   // Присвоение новых значений из полей формы редактирования профиля
   nameOutput.textContent = profileNameInput.value;
   jobOutput.textContent = profileDescriptionInput.value;
+  // Вызов функции редактирования данных профиля на серврере 
+  patchProfileData(profileNameInput, profileDescriptionInput);
   // Закрытие модального окна редактирования профиля
   closeModal(popupTypeEdit);
 }
@@ -118,7 +124,11 @@ function handleFormNewPlace(evt) {
   const cardName = initialCards.name;
   const cardLink = initialCards.link;
   // Вызов функции создания карточки и добавление в DOM
-  cardContainer.prepend(createCard({ name: cardName, link: cardLink }, callbackList));
+  cardContainer.prepend(
+    createCard({ name: cardName, link: cardLink }, callbackList)
+  );
+  // Вызов функции добавления карточки на серврере 
+
   // Закрытие модального окна добавления карточки
   closeModal(popupTypeNewCard);
   // Сброс значений полей формы добавления карточки
@@ -140,16 +150,13 @@ function handleImageClick(cardImage) {
   openModal(popupTypeImage);
 }
 
-// Функция отрисовки карточек из масива
-function renderCards() {
-  initialCards.forEach(function (cardData) {
-    // Вызов фунции создания карточки и добавление в DOM
-    cardContainer.append(createCard(cardData, callbackList));
-  });
-}
+// Вызов функции получения с свервера и подмены данных профиля
+getProfileData(nameProfile, descriptionProfile);
 
-// Вызов функции отрисовки карточек из массива
-renderCards();
+// Вызов функции получения с сервера и отрисовки массива карточек
+getCardsForRender(cardContainer, createCard, callbackList);
 
 // Вызов функции добавления валидации
-enableValidation(validationConfig); 
+enableValidation(validationConfig);
+
+// --------------------------------------------------------------
