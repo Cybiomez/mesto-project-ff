@@ -9,7 +9,7 @@ import { initialCards } from "./initialCards.js";
 // Импорт функций добавления и очистки валидации
 import { enableValidation, clearValidation } from "./validation.js";
 // Импорт функций взаимодействия с API
-import { getProfileData, getCardsForRender, patchProfileData } from "./apiConnect.js";
+import { getProfileData, getCardsForRender, patchProfileData, postNewCard } from "./apiConnect.js";
 
 // --------------------------------------------------------------
 
@@ -118,17 +118,8 @@ formEditProfile.addEventListener("submit", handleFormEditProfileSubmit);
 function handleFormNewPlace(evt) {
   // Отмена стандартной отправки формы
   evt.preventDefault();
-  // Определение значений для добавления карточки
-  initialCards.name = cardNameInput.value;
-  initialCards.link = cardUrlInput.value;
-  const cardName = initialCards.name;
-  const cardLink = initialCards.link;
-  // Вызов функции создания карточки и добавление в DOM
-  cardContainer.prepend(
-    createCard({ name: cardName, link: cardLink }, callbackList)
-  );
   // Вызов функции добавления карточки на серврере 
-
+  postNewCard(cardNameInput, cardUrlInput, cardContainer, createCard, callbackList);
   // Закрытие модального окна добавления карточки
   closeModal(popupTypeNewCard);
   // Сброс значений полей формы добавления карточки

@@ -16,7 +16,7 @@ function getProfileData(nameProfile, descriptionProfile) {
       nameProfile.textContent = result.name;
       descriptionProfile.textContent = result.about;
     });
-}
+};
 
 // Функция получения с сервера и отрисовки массива карточек
 function getCardsForRender(cardContainer, createCard, callbackList) {
@@ -34,7 +34,7 @@ function getCardsForRender(cardContainer, createCard, callbackList) {
         cardContainer.append(createCard(cardData, callbackList));
       });
     });
-}
+};
 
 function patchProfileData(profileNameInput, profileDescriptionInput) {
   fetch("https://nomoreparties.co/v1/wff-cohort-25/users/me", {
@@ -48,6 +48,32 @@ function patchProfileData(profileNameInput, profileDescriptionInput) {
       about: profileDescriptionInput.value,
     }),
   });
-}
+};
 
-export { getProfileData, getCardsForRender, patchProfileData };
+function postNewCard(
+  cardNameInput,
+  cardUrlInput,
+  cardContainer,
+  createCard,
+  callbackList
+) {
+  fetch("https://nomoreparties.co/v1/wff-cohort-25/cards", {
+    method: "POST",
+    headers: {
+      authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: cardNameInput.value,
+      link: cardUrlInput.value,
+    }),
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      cardContainer.prepend(
+        createCard({ name: result.name, link: result.link }, callbackList)
+      );
+    });
+};
+
+export { getProfileData, getCardsForRender, patchProfileData, postNewCard };

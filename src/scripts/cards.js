@@ -8,6 +8,7 @@ function createCard(cardData, callbackList) {
   // Поиск элементов для создания карточки
   const cardTitle = cardElement.querySelector(".card__title");
   const cardImage = cardElement.querySelector(".card__image");
+  const cardLikeButtonCounter = cardElement.querySelector(".card__like-button_counter");
   // Поиск элементов для обработчиков
   const deleteButton = cardElement.querySelector(".card__delete-button");
   const cardLikeButton = cardElement.querySelector(".card__like-button");
@@ -15,6 +16,7 @@ function createCard(cardData, callbackList) {
   cardTitle.textContent = cardData.name;
   cardImage.src = cardData.link;
   cardImage.alt = cardData.name;
+  cardLikeButtonCounter.textContent = cardData.likes.length;
   // Обработчик функции удаления карточки
   deleteButton.addEventListener("click", () =>
     callbackList.deleteCard(cardElement)
