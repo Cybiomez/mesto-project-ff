@@ -9,7 +9,7 @@ import { initialCards } from "./initialCards.js";
 // Импорт функций добавления и очистки валидации
 import { enableValidation, clearValidation } from "./validation.js";
 // Импорт функций взаимодействия с API
-import { getProfileData, getCardsForRender, patchProfileData, postNewCard } from "./apiConnect.js";
+import { editingProfileData, renderCards, patchProfileData, postNewCard } from "./apiConnect.js";
 
 // --------------------------------------------------------------
 
@@ -118,7 +118,7 @@ formEditProfile.addEventListener("submit", handleFormEditProfileSubmit);
 function handleFormNewPlace(evt) {
   // Отмена стандартной отправки формы
   evt.preventDefault();
-  // Вызов функции добавления карточки на серврере 
+  // Вызов функции создания карточки на серврере 
   postNewCard(cardNameInput, cardUrlInput, cardContainer, createCard, callbackList);
   // Закрытие модального окна добавления карточки
   closeModal(popupTypeNewCard);
@@ -142,10 +142,10 @@ function handleImageClick(cardImage) {
 }
 
 // Вызов функции получения с свервера и подмены данных профиля
-getProfileData(nameProfile, descriptionProfile);
+editingProfileData(nameProfile, descriptionProfile);
 
 // Вызов функции получения с сервера и отрисовки массива карточек
-getCardsForRender(cardContainer, createCard, callbackList);
+renderCards(cardContainer, createCard, callbackList);
 
 // Вызов функции добавления валидации
 enableValidation(validationConfig);
