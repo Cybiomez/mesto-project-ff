@@ -1,15 +1,13 @@
 // Импорт главного файла стилей
 import "../pages/index.css";
 // Импорт функций создания, уаления и лайка карточек
-import { createCard, deleteCard, likeCard } from "./cards.js";
+import { createCard} from "./cards.js";
 // Импорт функций открытия и закрытия модальных окон
 import { openModal, closeModal } from "./modal.js";
-// Импорт массива с данными для начальных карточек
-import { initialCards } from "./initialCards.js";
 // Импорт функций добавления и очистки валидации
 import { enableValidation, clearValidation } from "./validation.js";
 // Импорт функций взаимодействия с API
-import { editingProfileData, renderCards, patchProfileData, postNewCard } from "./apiConnect.js";
+import { editingProfileData, renderCards, patchProfileData, postNewCard, deleteCard, likeCard } from "./apiConnect.js";
 
 // --------------------------------------------------------------
 

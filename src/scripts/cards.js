@@ -8,7 +8,9 @@ function createCard(cardData, profileData, callbackList) {
   // Поиск элементов для создания карточки
   const cardTitle = cardElement.querySelector(".card__title");
   const cardImage = cardElement.querySelector(".card__image");
-  const cardLikeButtonCounter = cardElement.querySelector(".card__like-button_counter");
+  const cardLikeButtonCounter = cardElement.querySelector(
+    ".card__like-button_counter"
+  );
   // Поиск элементов для обработчиков
   const deleteButton = cardElement.querySelector(".card__delete-button");
   const cardLikeButton = cardElement.querySelector(".card__like-button");
@@ -17,25 +19,23 @@ function createCard(cardData, profileData, callbackList) {
   cardImage.src = cardData.link;
   cardImage.alt = cardData.name;
   cardLikeButtonCounter.textContent = cardData.likes.length;
-
+  // Условие доступности кнопки удаления
   if (cardData.owner._id !== profileData._id) {
-    deleteButton.classList.add("card__delete-button_unavailable")
-    // ОСТАЛОСЬ ДОПИСАТЬ КЛАСС
-  };
-
-  cardData.likes.forEach((id) => {
-    if (id === profileData._id) {
-      callbackList.likeCard(cardLikeButton)
-    };
+    deleteButton.classList.add("card__delete-button_unavailable");
+  }
+  // Условие отрисовки лайка
+  cardData.likes.forEach((user) => {
+    if (user._id.includes(`${profileData._id}`)) {
+      cardLikeButton.classList.add("card__like-button_is-active");
+    }
   });
-
   // Обработчик функции удаления карточки
   deleteButton.addEventListener("click", () =>
-    callbackList.deleteCard(cardElement)
+    callbackList.deleteCard(cardElement, cardData._id)
   );
   // Обработчик функции лайка
   cardLikeButton.addEventListener("click", () =>
-    callbackList.likeCard(cardLikeButton)
+    callbackList.likeCard(cardLikeButton, cardLikeButtonCounter, cardData)
   );
   // Обработчик функции модального окна карточки
   cardImage.addEventListener("click", () =>
@@ -45,15 +45,5 @@ function createCard(cardData, profileData, callbackList) {
   return cardElement;
 }
 
-// Функция обработчика удаления карточки
-function deleteCard(cardElement) {
-  cardElement.remove();
-}
-
-// Функция обработчика лайка
-function likeCard(cardLikeButton) {
-  cardLikeButton.classList.toggle("card__like-button_is-active");
-}
-
 // Экспорт функций создания, удаления и лайка карточек
-export { createCard, deleteCard, likeCard };
+export { createCard };

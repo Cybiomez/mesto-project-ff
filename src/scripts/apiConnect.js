@@ -92,7 +92,57 @@ function postNewCard(
     });
 }
 
-// Функция удаления карточки на сервере
+// Функция обработчика удаления карточки
+function deleteCard(cardElement, id) {
+  fetch(`https://nomoreparties.co/v1/wff-cohort-25/cards/${id}`, {
+    method: "DELETE",
+    headers: {
+      authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
+    },
+  });
+  cardElement.remove();
+}
 
+// Функция обработчика лайка
+function likeCard(
+  cardLikeButton,
+  cardLikeButtonCounter,
+  cardData
+) {
+   if (cardLikeButton.classList.contains("card__like-button_is-active")) 
+  {
+    fetch(
+      `https://nomoreparties.co/v1/wff-cohort-25/cards/likes/${cardData._id}`,
+      {
+        method: "DELETE",
+        headers: {
+          authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
+        },
+      }
+    )
+    .then((res) => res.json())
+    .then((res) => {
+      cardLikeButton.classList.toggle("card__like-button_is-active");
+      cardLikeButtonCounter.textContent = res.likes.length;
+    });
+  } 
+  else 
+  {
+    fetch(
+      `https://nomoreparties.co/v1/wff-cohort-25/cards/likes/${cardData._id}`,
+      {
+        method: "PUT",
+        headers: {
+          authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
+        },
+      }
+    )
+    .then((res) => res.json())
+    .then((res) => {
+      cardLikeButton.classList.toggle("card__like-button_is-active");
+      cardLikeButtonCounter.textContent = res.likes.length;
+    });
+  }
+}
 
-export { editingProfileData, renderCards, patchProfileData, postNewCard };
+export { editingProfileData, renderCards, patchProfileData, postNewCard, deleteCard, likeCard };
