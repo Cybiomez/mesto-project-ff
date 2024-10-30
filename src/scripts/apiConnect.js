@@ -33,8 +33,9 @@ const getProfileAndCardData = Promise.all([profileData, cardData]);
 // --------------------------------------------------------------
 
 // Функция получения с свервера и подмены данных профиля
-function editingProfileData(nameProfile, descriptionProfile) {
+function editingProfileData(profileImage, nameProfile, descriptionProfile) {
   profileData.then((result) => {
+    profileImage.style = `background-image: url(${result.avatar})`;
     nameProfile.textContent = result.name;
     descriptionProfile.textContent = result.about;
   });
@@ -50,8 +51,26 @@ function renderCards(cardContainer, createCard, callbackList) {
   });
 }
 
+// Функция редактирования аватара профиля на серврере
+function patchProfileImage(profileImage, profileImgeUrlInput) {
+  fetch("https://nomoreparties.co/v1/wff-cohort-25/users/me/avatar ", {
+    method: "PATCH",
+    headers: {
+      authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      avatar: profileImgeUrlInput.value,
+    }),
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      profileImage.style = `background-image: url(${result.avatar})`;
+    });
+}
+
 // Функция редактирования данных профиля на серврере
-function patchProfileData(profileNameInput, profileDescriptionInput) {
+function patchProfileData(nameProfile, descriptionProfile, profileNameInput, profileDescriptionInput) {
   fetch("https://nomoreparties.co/v1/wff-cohort-25/users/me", {
     method: "PATCH",
     headers: {
@@ -62,6 +81,11 @@ function patchProfileData(profileNameInput, profileDescriptionInput) {
       name: profileNameInput.value,
       about: profileDescriptionInput.value,
     }),
+  })
+  .then((res) => res.json())
+  .then((result) => {
+    nameProfile.textContent = result.name;
+    descriptionProfile.textContent = result.about;
   });
 }
 
@@ -86,9 +110,7 @@ function postNewCard(
   })
     .then((res) => res.json())
     .then((result) => {
-      cardContainer.prepend(
-        createCard(result, profileData, callbackList)
-      );
+      cardContainer.prepend(createCard(result, profileData, callbackList));
     });
 }
 
@@ -104,13 +126,8 @@ function deleteCard(cardElement, id) {
 }
 
 // Функция обработчика лайка
-function likeCard(
-  cardLikeButton,
-  cardLikeButtonCounter,
-  cardData
-) {
-   if (cardLikeButton.classList.contains("card__like-button_is-active")) 
-  {
+function likeCard(cardLikeButton, cardLikeButtonCounter, cardData) {
+  if (cardLikeButton.classList.contains("card__like-button_is-active")) {
     fetch(
       `https://nomoreparties.co/v1/wff-cohort-25/cards/likes/${cardData._id}`,
       {
@@ -120,14 +137,12 @@ function likeCard(
         },
       }
     )
-    .then((res) => res.json())
-    .then((res) => {
-      cardLikeButton.classList.toggle("card__like-button_is-active");
-      cardLikeButtonCounter.textContent = res.likes.length;
-    });
-  } 
-  else 
-  {
+      .then((res) => res.json())
+      .then((res) => {
+        cardLikeButton.classList.toggle("card__like-button_is-active");
+        cardLikeButtonCounter.textContent = res.likes.length;
+      });
+  } else {
     fetch(
       `https://nomoreparties.co/v1/wff-cohort-25/cards/likes/${cardData._id}`,
       {
@@ -137,12 +152,20 @@ function likeCard(
         },
       }
     )
-    .then((res) => res.json())
-    .then((res) => {
-      cardLikeButton.classList.toggle("card__like-button_is-active");
-      cardLikeButtonCounter.textContent = res.likes.length;
-    });
+      .then((res) => res.json())
+      .then((res) => {
+        cardLikeButton.classList.toggle("card__like-button_is-active");
+        cardLikeButtonCounter.textContent = res.likes.length;
+      });
   }
 }
 
-export { editingProfileData, renderCards, patchProfileData, postNewCard, deleteCard, likeCard };
+export {
+  editingProfileData,
+  renderCards,
+  patchProfileImage,
+  patchProfileData,
+  postNewCard,
+  deleteCard,
+  likeCard,
+};

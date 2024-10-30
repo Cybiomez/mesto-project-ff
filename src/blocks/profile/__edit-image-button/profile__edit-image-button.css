@@ -1,0 +1,39 @@
+.profile__edit-image-button {
+  width: 120px;
+  height: 120px;
+  /*
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  */
+  background: transparent url('../../../images/edit-icon.svg') center no-repeat;
+  background-size: 26px 26px;
+  border: none;
+  grid-area: button;
+  align-self: center;
+  cursor: pointer;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  -ms-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+}
+
+.profile__edit-image-button:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 1;
+}
+
+@media screen and (max-width: 480px) {
+  .profile__edit-image-button {
+    visibility: hidden;
+    /*
+    width: 120px;
+    height: 120px;
+    background-size: 26px 26px;
+    */
+  }
+}

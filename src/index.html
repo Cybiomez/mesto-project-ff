@@ -20,7 +20,9 @@
           <div
             class="profile__image"
             style="background-image: url(<%=require('./images/avatar.jpg')%>)"
-          ></div>
+          >
+            <button class="profile__edit-image-button" type="button"></button>
+          </div>
           <div class="profile__info">
             <h1 class="profile__title">Жак-Ив Кусто</h1>
             <button class="profile__edit-button" type="button"></button>
@@ -68,7 +70,9 @@
                 data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
                 required
               />
-              <span class="form__input-error input_type_description-error" ></span>
+              <span
+                class="form__input-error input_type_description-error"
+              ></span>
             </label>
             <button type="submit" class="button popup__button">
               Сохранить
@@ -76,6 +80,30 @@
           </form>
         </div>
       </div>
+
+      <div class="popup popup_type_new-image popup_is-animated">
+        <div class="popup__content">
+          <button type="button" class="popup__close"></button>
+          <h3 class="popup__title">Обновить аватар</h3>
+          <form class="popup__form" name="new-image" novalidate>
+            <label class="popup__field">
+              <input
+                type="url"
+                name="link"
+                class="popup__input popup__input_type_url-profile-image"
+                id="input_type_url-profile-image"
+                placeholder="Ссылка на картинку"
+                required
+              />
+              <span class="form__input-error input_type_url-profile-image-error"></span>
+            </label>
+            <button type="submit" class="button popup__button">
+              Сохранить
+            </button>
+          </form>
+        </div>
+      </div>
+
       <div class="popup popup_type_new-card popup_is-animated">
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
@@ -94,22 +122,20 @@
                 data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
                 required
               />
-              <span class="form__input-error input_type_card-name-error" ></span>
+              <span class="form__input-error input_type_card-name-error"></span>
             </label>
             <label class="popup__field">
               <input
                 type="url"
                 name="link"
-                class="popup__input popup__input_type_url"
-                id="input_type_url"
+                class="popup__input popup__input_type_url-card"
+                id="input_type_url-card"
                 placeholder="Ссылка на картинку"
                 required
               />
-              <span class="form__input-error input_type_url-error" ></span>
+              <span class="form__input-error input_type_url-card-error"></span>
             </label>
-            <button type="submit" class="button popup__button">
-              Создать
-            </button>
+            <button type="submit" class="button popup__button">Создать</button>
           </form>
         </div>
       </div>

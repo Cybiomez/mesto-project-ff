@@ -7,36 +7,41 @@ import { openModal, closeModal } from "./modal.js";
 // Импорт функций добавления и очистки валидации
 import { enableValidation, clearValidation } from "./validation.js";
 // Импорт функций взаимодействия с API
-import { editingProfileData, renderCards, patchProfileData, postNewCard, deleteCard, likeCard } from "./apiConnect.js";
+import { editingProfileData, renderCards, patchProfileImage, patchProfileData, postNewCard, deleteCard, likeCard } from "./apiConnect.js";
 
 // --------------------------------------------------------------
 
-// Поиск контейнера для карточек
-const cardContainer = document.querySelector(".places__list");
+// Поиск аватара профиля
+const profileImage = document.querySelector(".profile__image");
 
 // Поиск заголовка и описания профиля
 const nameProfile = document.querySelector(".profile__title");
 const descriptionProfile = document.querySelector(".profile__description");
 
+// Поиск контейнера для карточек
+const cardContainer = document.querySelector(".places__list");
+
 // Поиск модальных окон
 const popupList = Array.from(document.querySelectorAll(".popup"));
+const popupTypeImageEdit = document.querySelector(".popup_type_new-image");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
 const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 const popupTypeImage = document.querySelector(".popup_type_image");
 
 // Поиск форм редактирования профиля и добавления карточек
+const formEditImageProfile = document.forms["new-image"];
 const formEditProfile = document.forms["edit-profile"];
 const formNewPlace = document.forms["new-place"];
 
-// Поиск полей форм редактирования профиля и добавления карточек
+// Поиск полей форм редактирования аватара, профиля и добавления карточек
+const profileImgeUrlInput = document.querySelector(".popup__input_type_url-profile-image");
 const profileNameInput = document.querySelector(".popup__input_type_name");
-const profileDescriptionInput = document.querySelector(
-  ".popup__input_type_description"
-);
+const profileDescriptionInput = document.querySelector(".popup__input_type_description");
 const cardNameInput = document.querySelector(".popup__input_type_card-name");
-const cardUrlInput = document.querySelector(".popup__input_type_url");
+const cardUrlInput = document.querySelector(".popup__input_type_url-card");
 
 // Поиск кнопок отправки форм редактирования профиля и добавления карточек
+const profileEditImageButton = document.querySelector(".profile__edit-image-button");
 const profileEditButton = document.querySelector(".profile__edit-button");
 const profileAddButton = document.querySelector(".profile__add-button");
 
@@ -58,6 +63,12 @@ const validationConfig = {
 };
 
 // --------------------------------------------------------------
+
+// Обработчик события клика по кнопке открытя формы редактирования аватара профиля
+profileEditImageButton.addEventListener("click", function () {
+  // Вызов функии открытия модального окна
+  openModal(popupTypeImageEdit);
+});
 
 // Обработчик события клика по кнопке открытя формы редактирования профиля
 profileEditButton.addEventListener("click", function () {
@@ -91,18 +102,31 @@ popupList.forEach((popup) => {
 
 // --------------------------------------------------------------
 
+// Функция отправки формы редактирования аватара профиля
+function handleFormEditImageProfileSubmit(evt) {
+  // Отмена стандартной отправки формы
+  evt.preventDefault();
+  // Вызов функции редактирования аватара на сервере
+  patchProfileImage(profileImage, profileImgeUrlInput);
+  // Закрытие модального окна редактирования аватара профиля
+  closeModal(popupTypeImageEdit);
+  // Сброс значений полей формы редактирования аватара профиля
+  formEditImageProfile.reset();
+  // Вызов функции очистки ошибок валидации
+  clearValidation(popupTypeImageEdit, validationConfig);
+}
+
+// Обработчик события отправки формы редактирования аватара профиля
+formEditImageProfile.addEventListener("submit", handleFormEditImageProfileSubmit);
+
+// --------------------------------------------------------------
+
 // Функция отправки формы редактирования профиля
 function handleFormEditProfileSubmit(evt) {
   // Отмена стандартной отправки формы
   evt.preventDefault();
-  // Поиск полей формы редактирования профиля на странице
-  const nameOutput = nameProfile;
-  const jobOutput = descriptionProfile;
-  // Присвоение новых значений из полей формы редактирования профиля
-  nameOutput.textContent = profileNameInput.value;
-  jobOutput.textContent = profileDescriptionInput.value;
   // Вызов функции редактирования данных профиля на серврере 
-  patchProfileData(profileNameInput, profileDescriptionInput);
+  patchProfileData(nameProfile, descriptionProfile, profileNameInput, profileDescriptionInput);
   // Закрытие модального окна редактирования профиля
   closeModal(popupTypeEdit);
 }
@@ -140,7 +164,7 @@ function handleImageClick(cardImage) {
 }
 
 // Вызов функции получения с свервера и подмены данных профиля
-editingProfileData(nameProfile, descriptionProfile);
+editingProfileData(profileImage, nameProfile, descriptionProfile);
 
 // Вызов функции получения с сервера и отрисовки массива карточек
 renderCards(cardContainer, createCard, callbackList);
