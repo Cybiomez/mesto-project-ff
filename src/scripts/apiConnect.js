@@ -1,34 +1,46 @@
 // Мои данные для доступа к серверу
 const myData = {
-  cohort: "wff-cohort-25",
+  cohortUrl: "https://nomoreparties.co/v1/wff-cohort-25",
   token: "eff53e97-693a-49d3-ba0b-f139517f1f78",
 };
 
 // --------------------------------------------------------------
 
 // Запрос к серверу для получения данных пользователя
-const profileData = fetch(
-  "https://nomoreparties.co/v1/wff-cohort-25/users/me",
-  {
-    method: "GET",
-    headers: {
-      authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
-    },
-  }
-).then((res) => res.json());
-
-// Запрос к серверу для получения данных карточек
-const cardData = fetch("https://nomoreparties.co/v1/wff-cohort-25/cards", {
+const profileData = fetch(`${myData.cohortUrl}/users/me`, {
   method: "GET",
   headers: {
-    authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
+    authorization: myData.token,
   },
-}).then((res) => res.json());
+})
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    // Если ошибка, отклоняем промис
+    return Promise.reject(`Ошибка: ${res.status}`);
+  })
+  .catch((error) => {
+    console.log(console.log(`Ошибка: ${error}`));
+  });
 
-// --------------------------------------------------------------
-
-// Создание массива данных, полученных из запросов о пользователе и карточках
-const getProfileAndCardData = Promise.all([profileData, cardData]);
+// Запрос к серверу для получения данных карточек
+const cardData = fetch(`${myData.cohortUrl}/cards`, {
+  method: "GET",
+  headers: {
+    authorization: myData.token,
+  },
+})
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    // Если ошибка, отклоняем промис
+    return Promise.reject(`Ошибка: ${res.status}`);
+  })
+  .catch((error) => {
+    console.log(console.log(`Ошибка: ${error}`));
+  });
 
 // --------------------------------------------------------------
 
@@ -43,7 +55,7 @@ function editingProfileData(profileImage, nameProfile, descriptionProfile) {
 
 // Функция получения с сервера и отрисовки массива карточек
 function renderCards(cardContainer, createCard, callbackList) {
-  getProfileAndCardData.then((result) => {
+  Promise.all([profileData, cardData]).then((result) => {
     result[1].forEach(function (cardData) {
       // Вызов фунции создания карточки и добавление в DOM
       cardContainer.append(createCard(cardData, result[0], callbackList));
@@ -51,30 +63,46 @@ function renderCards(cardContainer, createCard, callbackList) {
   });
 }
 
+// --------------------------------------------------------------
+
 // Функция редактирования аватара профиля на серврере
 function patchProfileImage(profileImage, profileImgeUrlInput) {
-  fetch("https://nomoreparties.co/v1/wff-cohort-25/users/me/avatar ", {
+  return fetch(`${myData.cohortUrl}/users/me/avatar `, {
     method: "PATCH",
     headers: {
-      authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
+      authorization: myData.token,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
       avatar: profileImgeUrlInput.value,
     }),
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      // Если ошибка, отклоняем промис
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
     .then((result) => {
       profileImage.style = `background-image: url(${result.avatar})`;
+    })
+    .catch((error) => {
+      console.log(console.log(`Ошибка: ${error}`));
     });
 }
 
 // Функция редактирования данных профиля на серврере
-function patchProfileData(nameProfile, descriptionProfile, profileNameInput, profileDescriptionInput) {
-  fetch("https://nomoreparties.co/v1/wff-cohort-25/users/me", {
+function patchProfileData(
+  nameProfile,
+  descriptionProfile,
+  profileNameInput,
+  profileDescriptionInput
+) {
+  return fetch(`${myData.cohortUrl}/users/me`, {
     method: "PATCH",
     headers: {
-      authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
+      authorization: myData.token,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -82,11 +110,20 @@ function patchProfileData(nameProfile, descriptionProfile, profileNameInput, pro
       about: profileDescriptionInput.value,
     }),
   })
-  .then((res) => res.json())
-  .then((result) => {
-    nameProfile.textContent = result.name;
-    descriptionProfile.textContent = result.about;
-  });
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      // Если ошибка, отклоняем промис
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
+    .then((result) => {
+      nameProfile.textContent = result.name;
+      descriptionProfile.textContent = result.about;
+    })
+    .catch((error) => {
+      console.log(console.log(`Ошибка: ${error}`));
+    });
 }
 
 // Функция создания карточки на сервере и ее отрисовки
@@ -97,10 +134,10 @@ function postNewCard(
   createCard,
   callbackList
 ) {
-  fetch("https://nomoreparties.co/v1/wff-cohort-25/cards", {
+  const postCard = fetch(`${myData.cohortUrl}/cards`, {
     method: "POST",
     headers: {
-      authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
+      authorization: myData.token,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -108,54 +145,74 @@ function postNewCard(
       link: cardUrlInput.value,
     }),
   })
-    .then((res) => res.json())
-    .then((result) => {
-      cardContainer.prepend(createCard(result, profileData, callbackList));
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      // Если ошибка, отклоняем промис
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
+    .catch((error) => {
+      console.log(console.log(`Ошибка: ${error}`));
     });
+  return Promise.all([profileData, postCard]).then((result) => {
+    cardContainer.prepend(createCard(result[1], result[0], callbackList));
+  });
 }
 
 // Функция обработчика удаления карточки
 function deleteCard(cardElement, id) {
-  fetch(`https://nomoreparties.co/v1/wff-cohort-25/cards/${id}`, {
+  fetch(`${myData.cohortUrl}/cards/${id}`, {
     method: "DELETE",
     headers: {
-      authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
+      authorization: myData.token,
     },
-  });
-  cardElement.remove();
+  }).then(cardElement.remove());
 }
 
 // Функция обработчика лайка
 function likeCard(cardLikeButton, cardLikeButtonCounter, cardData) {
   if (cardLikeButton.classList.contains("card__like-button_is-active")) {
-    fetch(
-      `https://nomoreparties.co/v1/wff-cohort-25/cards/likes/${cardData._id}`,
-      {
-        method: "DELETE",
-        headers: {
-          authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
-        },
-      }
-    )
-      .then((res) => res.json())
+    fetch(`${myData.cohortUrl}/cards/likes/${cardData._id}`, {
+      method: "DELETE",
+      headers: {
+        authorization: myData.token,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        // Если ошибка, отклоняем промис
+        return Promise.reject(`Ошибка: ${res.status}`);
+      })
       .then((res) => {
         cardLikeButton.classList.toggle("card__like-button_is-active");
         cardLikeButtonCounter.textContent = res.likes.length;
+      })
+      .catch((error) => {
+        console.log(console.log(`Ошибка: ${error}`));
       });
   } else {
-    fetch(
-      `https://nomoreparties.co/v1/wff-cohort-25/cards/likes/${cardData._id}`,
-      {
-        method: "PUT",
-        headers: {
-          authorization: "eff53e97-693a-49d3-ba0b-f139517f1f78",
-        },
-      }
-    )
-      .then((res) => res.json())
+    fetch(`${myData.cohortUrl}/cards/likes/${cardData._id}`, {
+      method: "PUT",
+      headers: {
+        authorization: myData.token,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        // Если ошибка, отклоняем промис
+        return Promise.reject(`Ошибка: ${res.status}`);
+      })
       .then((res) => {
         cardLikeButton.classList.toggle("card__like-button_is-active");
         cardLikeButtonCounter.textContent = res.likes.length;
+      })
+      .catch((error) => {
+        console.log(console.log(`Ошибка: ${error}`));
       });
   }
 }

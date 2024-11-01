@@ -1,13 +1,21 @@
 // Импорт главного файла стилей
 import "../pages/index.css";
 // Импорт функций создания, уаления и лайка карточек
-import { createCard} from "./cards.js";
+import { createCard } from "./cards.js";
 // Импорт функций открытия и закрытия модальных окон
 import { openModal, closeModal } from "./modal.js";
 // Импорт функций добавления и очистки валидации
 import { enableValidation, clearValidation } from "./validation.js";
 // Импорт функций взаимодействия с API
-import { editingProfileData, renderCards, patchProfileImage, patchProfileData, postNewCard, deleteCard, likeCard } from "./apiConnect.js";
+import {
+  editingProfileData,
+  renderCards,
+  patchProfileImage,
+  patchProfileData,
+  postNewCard,
+  deleteCard,
+  likeCard,
+} from "./apiConnect.js";
 
 // --------------------------------------------------------------
 
@@ -34,14 +42,20 @@ const formEditProfile = document.forms["edit-profile"];
 const formNewPlace = document.forms["new-place"];
 
 // Поиск полей форм редактирования аватара, профиля и добавления карточек
-const profileImgeUrlInput = document.querySelector(".popup__input_type_url-profile-image");
+const profileImgeUrlInput = document.querySelector(
+  ".popup__input_type_url-profile-image"
+);
 const profileNameInput = document.querySelector(".popup__input_type_name");
-const profileDescriptionInput = document.querySelector(".popup__input_type_description");
+const profileDescriptionInput = document.querySelector(
+  ".popup__input_type_description"
+);
 const cardNameInput = document.querySelector(".popup__input_type_card-name");
 const cardUrlInput = document.querySelector(".popup__input_type_url-card");
 
 // Поиск кнопок отправки форм редактирования профиля и добавления карточек
-const profileEditImageButton = document.querySelector(".profile__edit-image-button");
+const profileEditImageButton = document.querySelector(
+  ".profile__edit-image-button"
+);
 const profileEditButton = document.querySelector(".profile__edit-button");
 const profileAddButton = document.querySelector(".profile__add-button");
 
@@ -106,18 +120,26 @@ popupList.forEach((popup) => {
 function handleFormEditImageProfileSubmit(evt) {
   // Отмена стандартной отправки формы
   evt.preventDefault();
+  // Вызов функции ожидания ответа
+  waitingResponse(true, formEditImageProfile);
   // Вызов функции редактирования аватара на сервере
-  patchProfileImage(profileImage, profileImgeUrlInput);
-  // Закрытие модального окна редактирования аватара профиля
-  closeModal(popupTypeImageEdit);
-  // Сброс значений полей формы редактирования аватара профиля
-  formEditImageProfile.reset();
-  // Вызов функции очистки ошибок валидации
-  clearValidation(popupTypeImageEdit, validationConfig);
+  patchProfileImage(profileImage, profileImgeUrlInput).finally(() => {
+    // Вызов функции ожидания ответа
+    waitingResponse(false, formEditImageProfile);
+    // Закрытие модального окна редактирования аватара профиля
+    closeModal(popupTypeImageEdit);
+    // Сброс значений полей формы редактирования аватара профиля
+    formEditImageProfile.reset();
+    // Вызов функции очистки ошибок валидации
+    clearValidation(popupTypeImageEdit, validationConfig);
+  });
 }
 
 // Обработчик события отправки формы редактирования аватара профиля
-formEditImageProfile.addEventListener("submit", handleFormEditImageProfileSubmit);
+formEditImageProfile.addEventListener(
+  "submit",
+  handleFormEditImageProfileSubmit
+);
 
 // --------------------------------------------------------------
 
@@ -125,10 +147,22 @@ formEditImageProfile.addEventListener("submit", handleFormEditImageProfileSubmit
 function handleFormEditProfileSubmit(evt) {
   // Отмена стандартной отправки формы
   evt.preventDefault();
-  // Вызов функции редактирования данных профиля на серврере 
-  patchProfileData(nameProfile, descriptionProfile, profileNameInput, profileDescriptionInput);
-  // Закрытие модального окна редактирования профиля
-  closeModal(popupTypeEdit);
+  // Вызов функции ожидания ответа
+  waitingResponse(true, formEditProfile);
+  // Вызов функции редактирования данных профиля на серврере
+  patchProfileData(
+    nameProfile,
+    descriptionProfile,
+    profileNameInput,
+    profileDescriptionInput
+  ).finally(() => {
+    // Вызов функции ожидания ответа
+    waitingResponse(false, formEditProfile);
+    // Закрытие модального окна редактирования профиля
+    closeModal(popupTypeEdit);
+    // Вызов функции очистки ошибок валидации
+    clearValidation(popupTypeEdit, validationConfig);
+  });
 }
 
 // Обработчик события отправки формы редактирования профиля
@@ -140,20 +174,43 @@ formEditProfile.addEventListener("submit", handleFormEditProfileSubmit);
 function handleFormNewPlace(evt) {
   // Отмена стандартной отправки формы
   evt.preventDefault();
-  // Вызов функции создания карточки на серврере 
-  postNewCard(cardNameInput, cardUrlInput, cardContainer, createCard, callbackList);
-  // Закрытие модального окна добавления карточки
-  closeModal(popupTypeNewCard);
-  // Сброс значений полей формы добавления карточки
-  formNewPlace.reset();
-  // Вызов функции очистки ошибок валидации
-  clearValidation(popupTypeEdit, validationConfig);
+  // Вызов функции ожидания ответа
+  waitingResponse(true, formNewPlace);
+  // Вызов функции создания карточки на серврере
+  postNewCard(
+    cardNameInput,
+    cardUrlInput,
+    cardContainer,
+    createCard,
+    callbackList
+  ).finally(() => {
+    // Вызов функции ожидания ответа
+    waitingResponse(false, formNewPlace);
+    // Закрытие модального окна добавления карточки
+    closeModal(popupTypeNewCard);
+    // Сброс значений полей формы добавления карточки
+    formNewPlace.reset();
+    // Вызов функции очистки ошибок валидации
+    clearValidation(popupTypeEdit, validationConfig);
+  });
 }
 
 // Обработчик события отправки формы добавления карточки
 formNewPlace.addEventListener("submit", handleFormNewPlace);
 
 // --------------------------------------------------------------
+
+// Функция ожидания ответа
+let formButtonTextDefault;
+function waitingResponse(inWait, form) {
+  const formButton = form.querySelector(".button");
+  if (inWait) {
+    formButtonTextDefault = formButton.textContent;
+    formButton.textContent = "Сохранение...";
+  } else if (!inWait) {
+    formButton.textContent = formButtonTextDefault;
+  }
+}
 
 // Функция обработчика клика по картинкам
 function handleImageClick(cardImage) {
