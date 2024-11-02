@@ -31,11 +31,14 @@ function createCard(cardData, profileData, callbackList) {
   });
   // Обработчик функции удаления карточки
   deleteButton.addEventListener("click", () =>
-    callbackList.deleteCard(cardElement, cardData._id)
+    callbackList.deleteCard(cardData._id).then(cardElement.remove())
   );
   // Обработчик функции лайка
   cardLikeButton.addEventListener("click", () =>
-    callbackList.likeCard(cardLikeButton, cardLikeButtonCounter, cardData)
+    callbackList.likeCard(cardLikeButton, cardData).then((res) => {
+      cardLikeButton.classList.toggle("card__like-button_is-active");
+      cardLikeButtonCounter.textContent = res.likes.length;
+    })
   );
   // Обработчик функции модального окна карточки
   cardImage.addEventListener("click", () =>

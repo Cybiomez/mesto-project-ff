@@ -15,7 +15,7 @@ import {
   postNewCard,
   deleteCard,
   likeCard,
-} from "./apiConnect.js";
+} from "./api.js";
 
 // --------------------------------------------------------------
 
@@ -123,16 +123,20 @@ function handleFormEditImageProfileSubmit(evt) {
   // Вызов функции ожидания ответа
   waitingResponse(true, formEditImageProfile);
   // Вызов функции редактирования аватара на сервере
-  patchProfileImage(profileImage, profileImgeUrlInput).finally(() => {
-    // Вызов функции ожидания ответа
-    waitingResponse(false, formEditImageProfile);
-    // Закрытие модального окна редактирования аватара профиля
-    closeModal(popupTypeImageEdit);
-    // Сброс значений полей формы редактирования аватара профиля
-    formEditImageProfile.reset();
-    // Вызов функции очистки ошибок валидации
-    clearValidation(popupTypeImageEdit, validationConfig);
-  });
+  patchProfileImage(profileImgeUrlInput)
+    .then((result) => {
+      profileImage.style = `background-image: url(${result.avatar})`;
+    })
+    .finally(() => {
+      // Вызов функции ожидания ответа
+      waitingResponse(false, formEditImageProfile);
+      // Закрытие модального окна редактирования аватара профиля
+      closeModal(popupTypeImageEdit);
+      // Сброс значений полей формы редактирования аватара профиля
+      formEditImageProfile.reset();
+      // Вызов функции очистки ошибок валидации
+      clearValidation(popupTypeImageEdit, validationConfig);
+    });
 }
 
 // Обработчик события отправки формы редактирования аватара профиля
@@ -150,19 +154,19 @@ function handleFormEditProfileSubmit(evt) {
   // Вызов функции ожидания ответа
   waitingResponse(true, formEditProfile);
   // Вызов функции редактирования данных профиля на серврере
-  patchProfileData(
-    nameProfile,
-    descriptionProfile,
-    profileNameInput,
-    profileDescriptionInput
-  ).finally(() => {
-    // Вызов функции ожидания ответа
-    waitingResponse(false, formEditProfile);
-    // Закрытие модального окна редактирования профиля
-    closeModal(popupTypeEdit);
-    // Вызов функции очистки ошибок валидации
-    clearValidation(popupTypeEdit, validationConfig);
-  });
+  patchProfileData(profileNameInput, profileDescriptionInput)
+    .then((result) => {
+      nameProfile.textContent = result.name;
+      descriptionProfile.textContent = result.about;
+    })
+    .finally(() => {
+      // Вызов функции ожидания ответа
+      waitingResponse(false, formEditProfile);
+      // Закрытие модального окна редактирования профиля
+      closeModal(popupTypeEdit);
+      // Вызов функции очистки ошибок валидации
+      clearValidation(popupTypeEdit, validationConfig);
+    });
 }
 
 // Обработчик события отправки формы редактирования профиля
@@ -176,23 +180,21 @@ function handleFormNewPlace(evt) {
   evt.preventDefault();
   // Вызов функции ожидания ответа
   waitingResponse(true, formNewPlace);
-  // Вызов функции создания карточки на серврере
-  postNewCard(
-    cardNameInput,
-    cardUrlInput,
-    cardContainer,
-    createCard,
-    callbackList
-  ).finally(() => {
-    // Вызов функции ожидания ответа
-    waitingResponse(false, formNewPlace);
-    // Закрытие модального окна добавления карточки
-    closeModal(popupTypeNewCard);
-    // Сброс значений полей формы добавления карточки
-    formNewPlace.reset();
-    // Вызов функции очистки ошибок валидации
-    clearValidation(popupTypeEdit, validationConfig);
-  });
+  // Вызов функции создания карточки на серврере и отрисовка в DOM
+  postNewCard(cardNameInput, cardUrlInput)
+    .then((result) => {
+      cardContainer.prepend(createCard(result[1], result[0], callbackList));
+    })
+    .finally(() => {
+      // Вызов функции ожидания ответа
+      waitingResponse(false, formNewPlace);
+      // Закрытие модального окна добавления карточки
+      closeModal(popupTypeNewCard);
+      // Сброс значений полей формы добавления карточки
+      formNewPlace.reset();
+      // Вызов функции очистки ошибок валидации
+      clearValidation(popupTypeEdit, validationConfig);
+    });
 }
 
 // Обработчик события отправки формы добавления карточки
@@ -220,11 +222,22 @@ function handleImageClick(cardImage) {
   openModal(popupTypeImage);
 }
 
-// Вызов функции получения с свервера и подмены данных профиля
-editingProfileData(profileImage, nameProfile, descriptionProfile);
+// Вызов функции получения с свервера и подмена данных профиля
+editingProfileData(profileImage, nameProfile, descriptionProfile).then(
+  (result) => {
+    profileImage.style = `background-image: url(${result.avatar})`;
+    nameProfile.textContent = result.name;
+    descriptionProfile.textContent = result.about;
+  }
+);
 
-// Вызов функции получения с сервера и отрисовки массива карточек
-renderCards(cardContainer, createCard, callbackList);
+// Вызов функции получения с сервера и отрисовка массива карточек
+renderCards(cardContainer, createCard, callbackList).then((result) => {
+  result[1].forEach(function (cardData) {
+    // Вызов фунции создания карточки и добавление в DOM
+    cardContainer.append(createCard(cardData, result[0], callbackList));
+  });
+});
 
 // Вызов функции добавления валидации
 enableValidation(validationConfig);
