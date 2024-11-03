@@ -15,11 +15,6 @@ const blockVerificationAndConversion = (res) => {
   return Promise.reject(`Ошибка: ${res.status}`);
 };
 
-// Блок обработки ошибок
-const blockCatch = (error) => {
-  console.log(console.log(`Ошибка: ${error}`));
-};
-
 // --------------------------------------------------------------
 
 // Запрос к серверу для получения данных пользователя
@@ -28,9 +23,7 @@ const getProfileData = fetch(`${myData.cohortUrl}/users/me`, {
   headers: {
     authorization: myData.token,
   },
-})
-  .then(blockVerificationAndConversion)
-  .catch(blockCatch);
+}).then(blockVerificationAndConversion);
 
 // Запрос к серверу для получения данных карточек
 const getCardData = fetch(`${myData.cohortUrl}/cards`, {
@@ -38,28 +31,19 @@ const getCardData = fetch(`${myData.cohortUrl}/cards`, {
   headers: {
     authorization: myData.token,
   },
-})
-  .then(blockVerificationAndConversion)
-  .catch(blockCatch);
-
-
+}).then(blockVerificationAndConversion);
 
 // --------------------------------------------------------------
 
-// Функция получения с свервера данных профиля
-function editingProfileData() {
-  return getProfileData;
-}
-
-// Функция получения с сервера массива карточек
-function renderCards() {
+// Функция получения с сервера данных профиля и массива карточек
+function fetchProfileAndCardsData() {
   return Promise.all([getProfileData, getCardData]);
 }
 
 // --------------------------------------------------------------
 
 // Функция редактирования аватара профиля на серврере
-function patchProfileImage(profileImgeUrlInput) {
+function fetchPatchProfileImage(profileImgeUrlInput) {
   return fetch(`${myData.cohortUrl}/users/me/avatar `, {
     method: "PATCH",
     headers: {
@@ -69,13 +53,11 @@ function patchProfileImage(profileImgeUrlInput) {
     body: JSON.stringify({
       avatar: profileImgeUrlInput.value,
     }),
-  })
-    .then(blockVerificationAndConversion)
-    .catch(blockCatch);
+  }).then(blockVerificationAndConversion);
 }
 
 // Функция редактирования данных профиля на серврере
-function patchProfileData(profileNameInput, profileDescriptionInput) {
+function fetchPatchProfileData(profileNameInput, profileDescriptionInput) {
   return fetch(`${myData.cohortUrl}/users/me`, {
     method: "PATCH",
     headers: {
@@ -86,13 +68,11 @@ function patchProfileData(profileNameInput, profileDescriptionInput) {
       name: profileNameInput.value,
       about: profileDescriptionInput.value,
     }),
-  })
-    .then(blockVerificationAndConversion)
-    .catch(blockCatch);
+  }).then(blockVerificationAndConversion);
 }
 
 // Функция создания карточки на сервере и ее отрисовки
-function postNewCard(cardNameInput, cardUrlInput) {
+function fetchPostNewCard(cardNameInput, cardUrlInput) {
   const postCard = fetch(`${myData.cohortUrl}/cards`, {
     method: "POST",
     headers: {
@@ -103,53 +83,46 @@ function postNewCard(cardNameInput, cardUrlInput) {
       name: cardNameInput.value,
       link: cardUrlInput.value,
     }),
-  })
-    .then(blockVerificationAndConversion)
-    .catch(blockCatch);
+  }).then(blockVerificationAndConversion);
   return Promise.all([getProfileData, postCard]);
 }
 
-// Функция обработчика удаления карточки
-function deleteCard(id) {
+// Функция удаления карточки
+function fetchDeleteCard(id) {
   return fetch(`${myData.cohortUrl}/cards/${id}`, {
     method: "DELETE",
     headers: {
       authorization: myData.token,
     },
   })
-    .then(blockVerificationAndConversion)
-    .catch(blockCatch);
 }
 
-// Функция обработчика лайка
-function likeCard(cardLikeButton, cardData) {
-  if (cardLikeButton.classList.contains("card__like-button_is-active")) {
-    return fetch(`${myData.cohortUrl}/cards/likes/${cardData._id}`, {
-      method: "DELETE",
-      headers: {
-        authorization: myData.token,
-      },
-    })
-      .then(blockVerificationAndConversion)
-      .catch(blockCatch);
-  } else {
-    return fetch(`${myData.cohortUrl}/cards/likes/${cardData._id}`, {
-      method: "PUT",
-      headers: {
-        authorization: myData.token,
-      },
-    })
-      .then(blockVerificationAndConversion)
-      .catch(blockCatch);
-  }
+// Функция постановки лайка
+function fetchPutLikeCard(cardData) {
+  return fetch(`${myData.cohortUrl}/cards/likes/${cardData._id}`, {
+    method: "PUT",
+    headers: {
+      authorization: myData.token,
+    },
+  }).then(blockVerificationAndConversion);
+}
+
+// Функция удаления лайка
+function fetchDeleteLikeCard(cardData) {
+  return fetch(`${myData.cohortUrl}/cards/likes/${cardData._id}`, {
+    method: "DELETE",
+    headers: {
+      authorization: myData.token,
+    },
+  }).then(blockVerificationAndConversion);
 }
 
 export {
-  editingProfileData,
-  renderCards,
-  patchProfileImage,
-  patchProfileData,
-  postNewCard,
-  deleteCard,
-  likeCard,
+  fetchProfileAndCardsData,
+  fetchPatchProfileImage,
+  fetchPatchProfileData,
+  fetchPostNewCard,
+  fetchDeleteCard,
+  fetchPutLikeCard,
+  fetchDeleteLikeCard,
 };
