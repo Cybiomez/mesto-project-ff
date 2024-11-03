@@ -1,5 +1,10 @@
 // Функция визуализации ошибки валидации поля ввода
-function showInputError(formElement, inputElement, validationConfig, errorMessage) {
+function showInputError(
+  formElement,
+  inputElement,
+  validationConfig,
+  errorMessage
+) {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.add(validationConfig.inputErrorClass);
   errorElement.textContent = errorMessage;
@@ -52,8 +57,12 @@ function toggleButtonState(inputList, buttonElement, validationConfig) {
 
 // Функция обработчика события ввода
 function formEventListeners(formElement, validationConfig) {
-  const inputList = Array.from(formElement.querySelectorAll(validationConfig.inputSelector));
-  const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
+  const inputList = Array.from(
+    formElement.querySelectorAll(validationConfig.inputSelector)
+  );
+  const buttonElement = formElement.querySelector(
+    validationConfig.submitButtonSelector
+  );
   toggleButtonState(inputList, buttonElement, validationConfig);
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", function () {
@@ -84,12 +93,9 @@ function clearValidation(formElement, validationConfig) {
   const buttonElement = formElement.querySelector(
     validationConfig.submitButtonSelector
   );
-  inputList.forEach((inputElement) => {
-    const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-    inputElement.classList.remove(validationConfig.inputErrorClass);
-    errorElement.classList.remove(validationConfig.errorClass);
-    errorElement.textContent = "";
-  });
+  inputList.forEach((inputElement) =>
+    hideInputError(formElement, inputElement, validationConfig)
+  );
   buttonElement.classList.add(validationConfig.inactiveButtonClass);
 }
 

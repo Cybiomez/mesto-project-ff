@@ -1,20 +1,20 @@
 // Импорт главного файла стилей
 import "../pages/index.css";
 // Импорт функций создания, уаления и лайка карточек
-import { createCard } from "./cards.js";
+import { createCard, changeLike, removeElement } from "./cards.js";
 // Импорт функций открытия и закрытия модальных окон
 import { openModal, closeModal } from "./modal.js";
 // Импорт функций добавления и очистки валидации
 import { enableValidation, clearValidation } from "./validation.js";
 // Импорт функций взаимодействия с API
 import {
-  editingProfileData,
-  renderCards,
-  patchProfileImage,
-  patchProfileData,
-  postNewCard,
-  deleteCard,
-  likeCard,
+  fetchProfileAndCardsData,
+  fetchPatchProfileImage,
+  fetchPatchProfileData,
+  fetchPostNewCard,
+  fetchDeleteCard,
+  fetchPutLikeCard,
+  fetchDeleteLikeCard,
 } from "./api.js";
 
 // --------------------------------------------------------------
@@ -116,6 +116,12 @@ popupList.forEach((popup) => {
 
 // --------------------------------------------------------------
 
+// Блок обработки ошибок
+const blockCatch = (error) => {
+  alert(`Ошибка: ${error}`);
+  console.log(`Ошибка: ${error}`);
+};
+
 // Функция отправки формы редактирования аватара профиля
 function handleFormEditImageProfileSubmit(evt) {
   // Отмена стандартной отправки формы
@@ -123,19 +129,18 @@ function handleFormEditImageProfileSubmit(evt) {
   // Вызов функции ожидания ответа
   waitingResponse(true, formEditImageProfile);
   // Вызов функции редактирования аватара на сервере
-  patchProfileImage(profileImgeUrlInput)
+  fetchPatchProfileImage(profileImgeUrlInput)
     .then((result) => {
       profileImage.style = `background-image: url(${result.avatar})`;
-    })
-    .finally(() => {
-      // Вызов функции ожидания ответа
-      waitingResponse(false, formEditImageProfile);
       // Закрытие модального окна редактирования аватара профиля
       closeModal(popupTypeImageEdit);
       // Сброс значений полей формы редактирования аватара профиля
       formEditImageProfile.reset();
-      // Вызов функции очистки ошибок валидации
-      clearValidation(popupTypeImageEdit, validationConfig);
+    })
+    .catch(blockCatch)
+    .finally(() => {
+      // Вызов функции ожидания ответа
+      waitingResponse(false, formEditImageProfile);
     });
 }
 
@@ -154,18 +159,17 @@ function handleFormEditProfileSubmit(evt) {
   // Вызов функции ожидания ответа
   waitingResponse(true, formEditProfile);
   // Вызов функции редактирования данных профиля на серврере
-  patchProfileData(profileNameInput, profileDescriptionInput)
+  fetchPatchProfileData(profileNameInput, profileDescriptionInput)
     .then((result) => {
       nameProfile.textContent = result.name;
       descriptionProfile.textContent = result.about;
+      // Закрытие модального окна редактирования профиля
+      closeModal(popupTypeEdit);
     })
+    .catch(blockCatch)
     .finally(() => {
       // Вызов функции ожидания ответа
       waitingResponse(false, formEditProfile);
-      // Закрытие модального окна редактирования профиля
-      closeModal(popupTypeEdit);
-      // Вызов функции очистки ошибок валидации
-      clearValidation(popupTypeEdit, validationConfig);
     });
 }
 
@@ -181,19 +185,18 @@ function handleFormNewPlace(evt) {
   // Вызов функции ожидания ответа
   waitingResponse(true, formNewPlace);
   // Вызов функции создания карточки на серврере и отрисовка в DOM
-  postNewCard(cardNameInput, cardUrlInput)
+  fetchPostNewCard(cardNameInput, cardUrlInput)
     .then((result) => {
       cardContainer.prepend(createCard(result[1], result[0], callbackList));
-    })
-    .finally(() => {
-      // Вызов функции ожидания ответа
-      waitingResponse(false, formNewPlace);
       // Закрытие модального окна добавления карточки
       closeModal(popupTypeNewCard);
       // Сброс значений полей формы добавления карточки
       formNewPlace.reset();
-      // Вызов функции очистки ошибок валидации
-      clearValidation(popupTypeEdit, validationConfig);
+    })
+    .catch(blockCatch)
+    .finally(() => {
+      // Вызов функции ожидания ответа
+      waitingResponse(false, formNewPlace);
     });
 }
 
@@ -201,6 +204,30 @@ function handleFormNewPlace(evt) {
 formNewPlace.addEventListener("submit", handleFormNewPlace);
 
 // --------------------------------------------------------------
+
+// Функция обработчика удаления карточки
+function deleteCard(id, cardElement) {
+  fetchDeleteCard(id)
+    .then((res) => {
+      if (res.ok) {
+        removeElement(cardElement);
+      }
+    })
+    .catch(blockCatch);
+}
+
+// Функция обработчика лайка
+function likeCard(status, cardData, cardLikeButton, cardLikeButtonCounter) {
+  if (!status) {
+    fetchPutLikeCard(cardData)
+      .then((res) => changeLike(cardLikeButton, cardLikeButtonCounter, res))
+      .catch(blockCatch);
+  } else {
+    fetchDeleteLikeCard(cardData)
+      .then((res) => changeLike(cardLikeButton, cardLikeButtonCounter, res))
+      .catch(blockCatch);
+  }
+}
 
 // Функция ожидания ответа
 let formButtonTextDefault;
@@ -222,22 +249,18 @@ function handleImageClick(cardImage) {
   openModal(popupTypeImage);
 }
 
-// Вызов функции получения с свервера и подмена данных профиля
-editingProfileData(profileImage, nameProfile, descriptionProfile).then(
-  (result) => {
-    profileImage.style = `background-image: url(${result.avatar})`;
-    nameProfile.textContent = result.name;
-    descriptionProfile.textContent = result.about;
-  }
-);
-
-// Вызов функции получения с сервера и отрисовка массива карточек
-renderCards(cardContainer, createCard, callbackList).then((result) => {
-  result[1].forEach(function (cardData) {
-    // Вызов фунции создания карточки и добавление в DOM
-    cardContainer.append(createCard(cardData, result[0], callbackList));
-  });
-});
+// Вызов функции получения с сервера и отрисовка данных профиля и массива карточек
+fetchProfileAndCardsData(cardContainer, createCard, callbackList)
+  .then((result) => {
+    profileImage.style = `background-image: url(${result[0].avatar})`;
+    nameProfile.textContent = result[0].name;
+    descriptionProfile.textContent = result[0].about;
+    result[1].forEach(function (cardData) {
+      // Вызов фунции создания карточки и добавление в DOM
+      cardContainer.append(createCard(cardData, result[0], callbackList));
+    });
+  })
+  .catch(blockCatch);
 
 // Вызов функции добавления валидации
 enableValidation(validationConfig);
