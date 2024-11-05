@@ -73,7 +73,7 @@ function fetchPatchProfileData(profileNameInput, profileDescriptionInput) {
 
 // Функция создания карточки на сервере и ее отрисовки
 function fetchPostNewCard(cardNameInput, cardUrlInput) {
-  const postCard = fetch(`${myData.cohortUrl}/cards`, {
+  return fetch(`${myData.cohortUrl}/cards`, {
     method: "POST",
     headers: {
       authorization: myData.token,
@@ -84,7 +84,6 @@ function fetchPostNewCard(cardNameInput, cardUrlInput) {
       link: cardUrlInput.value,
     }),
   }).then(pasteBlockVerificationAndConversion);
-  return Promise.all([getProfileData, postCard]);
 }
 
 // Функция удаления карточки

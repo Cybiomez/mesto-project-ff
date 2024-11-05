@@ -1,5 +1,5 @@
 // Функция создания карточки
-function createCard(cardData, profileData, callbackList) {
+function createCard(cardData, user_id, callbackList) {
   // Копирование шаблона карточки
   const cardTemplate = document.querySelector("#card-template").content;
   const cardElement = cardTemplate
@@ -20,12 +20,12 @@ function createCard(cardData, profileData, callbackList) {
   cardImage.alt = cardData.name;
   cardLikeButtonCounter.textContent = cardData.likes.length;
   // Условие доступности кнопки удаления
-  if (cardData.owner._id !== profileData._id) {
+  if (cardData.owner._id !== user_id) {
     cardDeleteButton.classList.add("card__delete-button_unavailable");
   }
   // Условие отрисовки лайка
-  cardData.likes.forEach((user) => {
-    if (user._id.includes(`${profileData._id}`)) {
+  cardData.likes.forEach((owner) => {
+    if (owner._id.includes(`${user_id}`)) {
       cardLikeButton.classList.add("card__like-button_is-active");
     }
   });

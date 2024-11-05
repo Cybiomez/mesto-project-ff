@@ -187,7 +187,7 @@ function handleFormNewPlace(evt) {
   // Вызов функции создания карточки на серврере и отрисовка в DOM
   fetchPostNewCard(cardNameInput, cardUrlInput)
     .then((result) => {
-      cardContainer.prepend(createCard(result[1], result[0], callbackList));
+      cardContainer.prepend(createCard(result, user_id, callbackList));
       // Закрытие модального окна добавления карточки
       closeModal(popupTypeNewCard);
       // Сброс значений полей формы добавления карточки
@@ -249,15 +249,18 @@ function handleImageClick(cardImage) {
   openModal(popupTypeImage);
 }
 
+let user_id;
+
 // Вызов функции получения с сервера и отрисовка данных профиля и массива карточек
 fetchProfileAndCardsData(cardContainer, createCard, callbackList)
   .then((result) => {
     profileImage.style = `background-image: url(${result[0].avatar})`;
     nameProfile.textContent = result[0].name;
     descriptionProfile.textContent = result[0].about;
+    user_id = result[0]._id;
     result[1].forEach(function (cardData) {
       // Вызов фунции создания карточки и добавление в DOM
-      cardContainer.append(createCard(cardData, result[0], callbackList));
+      cardContainer.append(createCard(cardData, user_id, callbackList));
     });
   })
   .catch(pasteBlockCatch);
