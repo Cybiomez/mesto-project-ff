@@ -7,7 +7,7 @@ const myData = {
 // --------------------------------------------------------------
 
 // Блок проверки и преобразования
-const blockVerificationAndConversion = (res) => {
+const pastepasteBlockVerificationAndConversion = (res) => {
   if (res.ok) {
     return res.json();
   }
@@ -23,7 +23,7 @@ const getProfileData = fetch(`${myData.cohortUrl}/users/me`, {
   headers: {
     authorization: myData.token,
   },
-}).then(blockVerificationAndConversion);
+}).then(pasteBlockVerificationAndConversion);
 
 // Запрос к серверу для получения данных карточек
 const getCardData = fetch(`${myData.cohortUrl}/cards`, {
@@ -31,7 +31,7 @@ const getCardData = fetch(`${myData.cohortUrl}/cards`, {
   headers: {
     authorization: myData.token,
   },
-}).then(blockVerificationAndConversion);
+}).then(pasteBlockVerificationAndConversion);
 
 // --------------------------------------------------------------
 
@@ -53,7 +53,7 @@ function fetchPatchProfileImage(profileImgeUrlInput) {
     body: JSON.stringify({
       avatar: profileImgeUrlInput.value,
     }),
-  }).then(blockVerificationAndConversion);
+  }).then(pasteBlockVerificationAndConversion);
 }
 
 // Функция редактирования данных профиля на серврере
@@ -68,7 +68,7 @@ function fetchPatchProfileData(profileNameInput, profileDescriptionInput) {
       name: profileNameInput.value,
       about: profileDescriptionInput.value,
     }),
-  }).then(blockVerificationAndConversion);
+  }).then(pasteBlockVerificationAndConversion);
 }
 
 // Функция создания карточки на сервере и ее отрисовки
@@ -83,7 +83,7 @@ function fetchPostNewCard(cardNameInput, cardUrlInput) {
       name: cardNameInput.value,
       link: cardUrlInput.value,
     }),
-  }).then(blockVerificationAndConversion);
+  }).then(pasteBlockVerificationAndConversion);
   return Promise.all([getProfileData, postCard]);
 }
 
@@ -104,7 +104,7 @@ function fetchPutLikeCard(cardData) {
     headers: {
       authorization: myData.token,
     },
-  }).then(blockVerificationAndConversion);
+  }).then(pasteBlockVerificationAndConversion);
 }
 
 // Функция удаления лайка
@@ -114,7 +114,7 @@ function fetchDeleteLikeCard(cardData) {
     headers: {
       authorization: myData.token,
     },
-  }).then(blockVerificationAndConversion);
+  }).then(pasteBlockVerificationAndConversion);
 }
 
 export {

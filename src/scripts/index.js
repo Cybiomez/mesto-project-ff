@@ -117,7 +117,7 @@ popupList.forEach((popup) => {
 // --------------------------------------------------------------
 
 // Блок обработки ошибок
-const blockCatch = (error) => {
+const pasteBlockCatch = (error) => {
   alert(`Ошибка: ${error}`);
   console.log(`Ошибка: ${error}`);
 };
@@ -137,7 +137,7 @@ function handleFormEditImageProfileSubmit(evt) {
       // Сброс значений полей формы редактирования аватара профиля
       formEditImageProfile.reset();
     })
-    .catch(blockCatch)
+    .catch(pasteBlockCatch)
     .finally(() => {
       // Вызов функции ожидания ответа
       waitingResponse(false, formEditImageProfile);
@@ -166,7 +166,7 @@ function handleFormEditProfileSubmit(evt) {
       // Закрытие модального окна редактирования профиля
       closeModal(popupTypeEdit);
     })
-    .catch(blockCatch)
+    .catch(pasteBlockCatch)
     .finally(() => {
       // Вызов функции ожидания ответа
       waitingResponse(false, formEditProfile);
@@ -193,7 +193,7 @@ function handleFormNewPlace(evt) {
       // Сброс значений полей формы добавления карточки
       formNewPlace.reset();
     })
-    .catch(blockCatch)
+    .catch(pasteBlockCatch)
     .finally(() => {
       // Вызов функции ожидания ответа
       waitingResponse(false, formNewPlace);
@@ -213,7 +213,7 @@ function deleteCard(id, cardElement) {
         removeElement(cardElement);
       }
     })
-    .catch(blockCatch);
+    .catch(pasteBlockCatch);
 }
 
 // Функция обработчика лайка
@@ -221,11 +221,11 @@ function likeCard(status, cardData, cardLikeButton, cardLikeButtonCounter) {
   if (!status) {
     fetchPutLikeCard(cardData)
       .then((res) => changeLike(cardLikeButton, cardLikeButtonCounter, res))
-      .catch(blockCatch);
+      .catch(pasteBlockCatch);
   } else {
     fetchDeleteLikeCard(cardData)
       .then((res) => changeLike(cardLikeButton, cardLikeButtonCounter, res))
-      .catch(blockCatch);
+      .catch(pasteBlockCatch);
   }
 }
 
@@ -260,7 +260,7 @@ fetchProfileAndCardsData(cardContainer, createCard, callbackList)
       cardContainer.append(createCard(cardData, result[0], callbackList));
     });
   })
-  .catch(blockCatch);
+  .catch(pasteBlockCatch);
 
 // Вызов функции добавления валидации
 enableValidation(validationConfig);
