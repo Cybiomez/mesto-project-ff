@@ -7,7 +7,7 @@ const myData = {
 // --------------------------------------------------------------
 
 // Блок проверки и преобразования
-const pastepasteBlockVerificationAndConversion = (res) => {
+const pasteBlockVerificationAndConversion = (res) => {
   if (res.ok) {
     return res.json();
   }
